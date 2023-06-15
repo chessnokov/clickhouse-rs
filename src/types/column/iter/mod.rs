@@ -20,10 +20,11 @@ use std::{
 };
 
 fn check_type(src: &SqlType, dst: &SqlType) -> bool {
-    if let SqlType::SimpleAggregateFunction(_, nested) = src {
-        check_type(nested, dst)
-    } else {
-        src == dst
+    match src {
+        SqlType::SimpleAggregateFunction(_, nested) => check_type(nested, dst),
+        SqlType::Enum8(_) => &SqlType::Int8 == dst,
+        SqlType::Enum16(_) => &SqlType::Int16 == dst,
+        _ => src == dst,
     }
 }
 
